@@ -16,6 +16,7 @@ How to Play 🎲
     Enter a word using the given letters and press "Enter" or click the "Check Word" button ✅
     Points are awarded based on word length and submission time 💯
     After the timer runs out, a list of suggested words will be displayed 📝
+    You can preview the site here: yekrangiariana.github.io/letter-shuffle ⭐️
 
 Technologies Used 💻
 
