@@ -1,55 +1,73 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Letter Shuffle</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <!-- Home menu -->
-  <div id="home-menu">
-    <h1>🎲Letter Shuffle</h1>
-    <div id="game-description">
-      <p>🧙‍♀️ Unleash your inner word wizard! Race against the clock to form valid words using the random letters provided.</p>
-      <p><strong>Rules:</strong></p>
-      <ol>
-        <li>🔤 We will give you 10 random letters (4 vowels and 6 consonants).</li>
-        <li>⏰ You have 1 minute to create as many valid words as possible.</li>
-        <li>📖 Valid words are in our dictionary and use the given letters.</li>
-        <li>🔎 Press Enter or click "Check Word" to check validity.</li>
-        <li>🏅 The longer the word and the quicker you respond, the higher the score.</li>
-      </ol>
-    </div>
-    <button onclick="startGame();">Start Game</button>
-  </div>
-  <!-- Game container (initially hidden) -->
-  <div id="game-container" style="display: none;">
-    <div class="game-header">
-      <div class="game-title">Letter Shuffle</div>
-      <div class="game-score">Score: <span id="score-display">0</span></div>
-      <p id="bonus-message-display"></p>
-    </div>
-    <div class="game-body">
-      <div class="game-board">
-        <div class="random-letters" id="random-letters-container"></div>
-        <div class="word-input">
-          <label for="word-input">Enter a word:</label>
-          <input type="text" id="word-input">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Letter Shuffle</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    
+    <!-- Home menu -->
+    <div class="wrapper">
+      <div id="home-menu">
+        <div id="game-description">
+          <h1>🎲Letter Shuffle</h1>
+          <p>
+            🧙‍♀️ Unleash your inner word wizard! Race against the clock to form
+            valid words using the random letters provided.
+          </p>
+          <p><strong>Rules:</strong></p>
+          <ol>
+            <li>
+              🔤 We will give you 10 random letters (4 vowels and 6 consonants).
+            </li>
+            <li>
+              ⏰ You have 1 minute to create as many valid words as possible.
+            </li>
+            <li>
+              📖 Valid words are in our dictionary and use the given letters.
+            </li>
+            <li>🔎 Press Enter or click "Check Word" to check validity.</li>
+            <li>
+              🏅 The longer the word and the quicker you respond, the higher the
+              score.
+            </li>
+          </ol>
         </div>
-        <div class="buttons">
-          <button class="button" onclick="checkWord()">Check Word</button>
-          <button class="button" onclick="suggestWords()">Show Answers</button>
-        </div>
-        <div class="timer" id="timer-display"></div>
+        <button onclick="startGame();">Start Game</button>
       </div>
-      <div class="game-suggestions">
-        <div class="suggestions-title">Your gusses:</div>
-        <ul class="suggestions-list" id="word-list"></ul>
-        <div class="suggestions-help" id="suggestions-container"></div>
-        <button class="button" id="start-again" onclick="displayRandomLetters();">New Game</button>
+      <!-- Game container (initially hidden) -->
+      <div id="game-container" style="display: none">
+        <div class="game-header">
+          <div class="timer" id="timer-display"></div>
+          <div class="game-title">Letter Shuffle</div>
+          <div class="game-score">Score: <span id="score-display">0</span></div>
+        </div>
+        <div class="game-body">
+          <div class="game-board">
+            <div class="random-letters" id="random-letters-container"></div>
+            <div id="message-display"></div>
+            <div class="word-input">
+              <input type="text" id="word-input" oninput="this.value = this.value.toUpperCase()"/>
+              <button id="check-word-btn" class="button" onclick="checkWord()">⏎</button>
+            </div>
+          </div>
+          <div class="game-suggestions">
+            <div class="suggestions-title">Your gusses:</div>
+            <ul class="suggestions-list" id="word-list"></ul>
+            <div class="suggestions-help" id="suggestions-container"></div>
+            <div class="buttons">
+              <button class="button" onclick="suggestWords()">Show Answers</button>
+            </div>
+            <button class="button" id="start-again" onclick="displayRandomLetters();">New Game ⌘K</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <script src="app.js"></script>
-</body>
+    <footer>
+      <p>Made with ❤️ by Ariana Yekrangi</p>
+      <p><a href="README.html">Learn More</a></p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
 </html>
