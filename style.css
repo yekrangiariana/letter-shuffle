@@ -1,22 +1,43 @@
-/* Default styles */
 body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f5f5f5;
   color: #333;
-  max-width: 800px;
+  font-size: 1.5rem;
+  height: 100%;
   margin: 0 auto;
   padding: 2rem;
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-#bonus-message-display {
+.wrapper {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+#home-menu,
+#game-container {
+  width: 100%;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+#message-display {
   font-family: Arial, sans-serif;
   font-size: 18px;
   text-align: center;
   color: #4a4a4a;
   padding: 10px;
   margin: 5px;
-  background-color: #f5f5f5;
   border-radius: 5px;
 }
 
@@ -27,7 +48,6 @@ h1 {
 }
 
 #game-description {
-  max-width: 800px;
   margin: 0 auto;
   text-align: left;
   font-size: 1.2em;
@@ -42,6 +62,7 @@ h1 {
 
 #random-letters-container {
   display: flex;
+  text-transform: uppercase;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 2rem;
@@ -63,18 +84,48 @@ h1 {
   animation: fade-in 0.5s ease-out forwards;
 }
 
-label {
-  font-size: 1.3rem;
+#game-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.word-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 #word-input {
+  flex-grow: 1;
   font-size: 1.3rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
   padding: 0.5rem;
+  border: none;
+  border-bottom: 2px solid #333;
+  outline: none;
+  width: 60%;
+  background-color: #f2f2f2;
+}
+
+#check-word-btn {
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  margin-left: 1rem;
+  padding: 0px;
   border: 2px solid #333;
-  border-radius: 4px;
-  width: 70%;
 }
 
 button {
@@ -87,7 +138,8 @@ button {
   margin-bottom: 1rem;
   border-radius: 4px;
   cursor: pointer;
-  width: 25%;
+  width: auto; /* Change width to auto */
+  min-width: 15%; /* Add a minimum width */
 }
 
 button:hover {
@@ -98,6 +150,7 @@ button:hover {
   position: relative;
   border-radius: 5px;
   box-sizing: border-box;
+  padding-top: 30px;
 }
 
 #start-again {
@@ -113,8 +166,8 @@ button:hover {
 
 #start-again:hover {
   background-color: green;
-  color: #fff;
-  border: 2px solid #fff;
+  color: #fff !important;
+  border: 2px solid #333;
   border-radius: 5px;
   padding: 5px 10px;
 }
@@ -127,6 +180,7 @@ button:hover {
   margin-left: 0;
   padding-left: 0;
   list-style: none;
+  text-transform: uppercase;
 }
 
 .suggestion {
@@ -136,6 +190,7 @@ button:hover {
 }
 
 .suggestion-text {
+  text-transform: uppercase;
   margin-right: 20px;
   font-size: 18px;
   font-weight: bold;
@@ -144,6 +199,7 @@ button:hover {
 
 .suggestion-letters {
   display: flex;
+  text-transform: uppercase;
 }
 
 .suggestion-letter {
@@ -195,18 +251,7 @@ li {
 .word-length-display {
   font-size: 1rem;
   margin-right: 10px;
-}
-
-#game-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid #333;
-  border-radius: 10px;
-  background-color: #f2f2f2;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  text-transform: capitalize;
 }
 
 #game-title {
@@ -220,30 +265,7 @@ li {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-}
-
-#game-input label {
-  font-size: 1.3rem;
-  margin-right: 1rem;
-}
-
-#game-input input[type="number"] {
-  font-size: 1.3rem;
-  padding: 0.5rem;
-  border: 2px solid #333;
-  border-radius: 4px;
-  width: 70%;
-}
-
-#game-input button {
-  font-size: 1.3rem;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 25%;
+  background-color: #f5f5f5;
 }
 
 #game-buttons {
@@ -277,169 +299,142 @@ li {
   margin-bottom: 2rem;
 }
 
-/* Media queries */
-@media (max-width: 600px) {
-  body {
-    font-size: 1.2rem;
-    padding: 1rem;
-  }
-
-  #game-description {
-    font-size: 1em;
-    padding: 10px;
-  }
-
-  .mini-box {
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    line-height: 30px;
-  }
-
-  label {
-    font-size: 1.1rem;
-  }
-
-  #word-input {
-    font-size: 1.1rem;
-  }
-
-  button {
-    font-size: 1.1rem;
-    width: 40%;
-  }
-
-  #game-input label {
-    font-size: 1.1rem;
-  }
-
-  #game-input input[type="number"] {
-    font-size: 1.1rem;
-  }
-
-  #game-input button {
-    font-size: 1.1rem;
-    width: 40%;
-  }
-
-  #game-buttons button {
-    font-size: 1.1rem;
-    width: 40%;
-    margin-bottom: 0.5rem;
-  }
-
-  #game-title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
+fade-in {
+  animation: fadeIn ease 1s;
+  -webkit-animation: fadeIn ease 1s;
+  -moz-animation: fadeIn ease 1s;
+  -o-animation: fadeIn ease 1s;
+  -ms-animation: fadeIn ease 1s;
 }
 
-@media (min-width: 601px) and (max-width: 900px) {
-  body {
-    font-size: 1.3rem;
-  }
-
-  #game-description {
-    font-size: 1.1em;
-    padding: 15px;
-  }
-
-  .mini-box {
-    width: 35px;
-    height: 35px;
-    font-size: 24px;
-    line-height: 35px;
-  }
-
-  label {
-    font-size: 1.2rem;
-  }
-
-  #word-input {
-    font-size: 1.2rem;
-  }
-
-  button {
-    font-size: 1.2rem;
-    width: 30%;
-  }
-
-  #game-input label {
-    font-size: 1.2rem;
-  }
-
-  #game-input input[type="number"] {
-    font-size: 1.2rem;
-  }
-
-  #game-input button {
-    font-size: 1.2rem;
-    width: 30%;
-  }
-
-  #game-buttons button {
-    font-size: 1.2rem;
-    width: 30%;
-    margin-bottom: 0.5rem;
-  }
-
-  #game-title {
-    font-size: 2.3rem;
-    margin-bottom: 1.5rem;
-  }
+#correct-guess-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: green;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-@media (min-width: 901px) and (max-width: 1200px) {
-  body {
-    font-size: 1.5rem;
-  }
+.fade-in {
+  opacity: 1;
+}
 
-  #game-description {
-    font-size: 1.2em;
-    padding: 20px;
-  }
+.fade-out {
+  opacity: 0;
+}
 
-  .mini-box {
-    width: 40px;
-    height: 40px;
-    font-size: 26px;
-    line-height: 40px;
-  }
+.message-button {
+  display: inline-block;
+  margin: 2px;
+  padding: 5px 10px;
+  color: #fff;
+  border-radius: 5px;
+  background-color: #333;
+  text-align: center;
+  font-size: 18px;
+}
 
-  label {
-    font-size: 1.3rem;
-  }
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #1f1f1f;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
 
-  #word-input {
-    font-size: 1.3rem;
-  }
+.game-title {
+  flex-grow: 1;
+  text-align: center;
+}
 
-  button {
-    font-size: 1.3rem;
-    width: 25%;
-  }
+.game-score {
+  margin-right: 20px;
+}
 
-  #game-input label {
-    font-size: 1.3rem;
-  }
+.timer {
+  font-size: 18px;
+  width: 120px; /* set a fixed width for the timer element */
+  visibility: visible; /* make the timer element visible by default */
+}
 
-  #game-input input[type="number"] {
-    font-size: 1.3rem;
-  }
+.timer.inactive {
+  visibility: hidden; /* hide the timer element when it's inactive */
+}
 
-  #game-input button {
-    font-size: 1.3rem;
-    width: 25%;
-  }
+footer {
+  background-color: #f5f5f5;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 50px;
+}
 
-  #game-buttons button {
-    font-size: 1.3rem;
-    width: 25%;
-    margin-bottom: 0.5rem;
-  }
+footer a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+}
 
-  #game-title {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-  }
+footer a:hover {
+  border-bottom: none;
+}
+
+#readme {
+  max-width: 45%;
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f8f8f8;
+  border: 2px solid #333;
+  border-radius: 10px;
+}
+
+#readme h1 {
+  font-size: 36px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+#readme h2 {
+  font-size: 24px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+#readme p {
+  margin-bottom: 20px;
+}
+
+#readme ul {
+  margin-bottom: 20px;
+}
+
+#readme ol {
+  margin-bottom: 20px;
+}
+
+#readme li {
+  margin-bottom: 5px;
+}
+
+#readme a {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+}
+
+#readme a:hover {
+  border-bottom: none;
 }
