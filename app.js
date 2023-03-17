@@ -25,6 +25,9 @@ const VOWELS = ["a", "e", "i", "o", "u"]
 
 const words = []
 let timer = null
+let score = 0
+const submittedWords = []
+let timeoutID = null
 
 const xhr = new XMLHttpRequest()
 xhr.open("GET", "words.txt", true)
@@ -35,26 +38,7 @@ xhr.onreadystatechange = function () {
 }
 xhr.send()
 
-function handleEnterKey(event) {
-  if (event.key === "Enter") {
-    checkWord()
-  }
-}
-
-let score = 0
-
-function updateScore(points, bonusMessage) {
-  score += points
-  const scoreDisplay = document.getElementById("score-display")
-  scoreDisplay.textContent = `Score: ${score}`
-
-  // Display the bonus message
-  const bonusMessageDisplay = document.getElementById("bonus-message-display")
-  bonusMessageDisplay.textContent = bonusMessage
-  setTimeout(() => {
-    bonusMessageDisplay.textContent = ""
-  }, 3000)
-}
+document.getElementById("start-again").addEventListener("click", startGame)
 
 function startGame() {
   // Display the game container
@@ -67,6 +51,10 @@ function startGame() {
 
   // Generate the initial set of random letters
   displayRandomLetters()
+
+  // Focus the input element
+  const wordInput = document.getElementById("word-input")
+  wordInput.focus()
 }
 
 function generateRandomLetters() {
@@ -83,14 +71,71 @@ function generateRandomLetters() {
   return letters
 }
 
+function shuffle(array) {
+  const newArray = array.slice()
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
+  }
+  return newArray
+}
+
+function updateScore(points, bonusMessage, correctGuessMessage) {
+  score += points
+  const scoreDisplay = document.getElementById("score-display")
+  scoreDisplay.textContent = `${score}`
+
+  const messageDisplay = document.getElementById("message-display")
+  messageDisplay.innerHTML = "" // Clear the previous content
+  messageDisplay.style.textAlign = "center" // Center the messages
+
+  if (bonusMessage) {
+    const bonusMessageElement = document.createElement("div")
+    bonusMessageElement.textContent = bonusMessage
+    bonusMessageElement.classList.add("message-button")
+    messageDisplay.appendChild(bonusMessageElement)
+  }
+
+  const correctGuessMessageElement = document.createElement("div")
+  correctGuessMessageElement.textContent = correctGuessMessage
+  correctGuessMessageElement.classList.add("message-button")
+  messageDisplay.appendChild(correctGuessMessageElement)
+
+  if (timeoutID !== null) {
+    clearTimeout(timeoutID)
+  }
+  timeoutID = setTimeout(() => {
+    messageDisplay.textContent = ""
+  }, 3000)
+}
+
+function displayMessage(message, color) {
+  const messageDisplay = document.getElementById("message-display")
+  messageDisplay.innerHTML = "" // Clear the previous content
+  messageDisplay.style.color = color
+
+  const messageElement = document.createElement("div")
+  messageElement.textContent = message
+  messageElement.classList.add("message-button")
+  messageDisplay.appendChild(messageElement)
+
+  if (timeoutID !== null) {
+    clearTimeout(timeoutID)
+  }
+  timeoutID = setTimeout(() => {
+    messageDisplay.textContent = ""
+  }, 3000)
+}
+
 function displayRandomLetters() {
   const container = document.getElementById("random-letters-container")
   const randomLetters = generateRandomLetters()
+  const shuffledLetters = shuffle(randomLetters)
   container.innerHTML = ""
-  randomLetters.forEach(letter => {
+  shuffledLetters.forEach(letter => {
     const miniBox = document.createElement("div")
     miniBox.classList.add("mini-box")
-    miniBox.textContent = letter
+    miniBox.textContent = letter.toUpperCase()
     container.appendChild(miniBox)
 
     // Re-enable the input and "Check Word" button
@@ -100,6 +145,7 @@ function displayRandomLetters() {
       "button[onclick='checkWord()']"
     )
     checkWordButton.disabled = false
+    toggleWordInputAndButtons(true)
   })
 
   // Clear the suggestions container
@@ -129,6 +175,29 @@ function displayRandomLetters() {
   }, 1000)
 }
 
+function updateTimerDisplay(timeRemaining) {
+  const timerDisplay = document.getElementById("timer-display")
+  timerDisplay.textContent = `⏰ ${timeRemaining}`
+}
+
+function toggleWordInputAndButtons(show) {
+  const wordInputSection = document.querySelector(".word-input")
+  const buttonsSection = document.querySelector(".buttons")
+  const newGameButton = document.getElementById("start-again")
+
+  if (show) {
+    wordInputSection.style.display = "block"
+    buttonsSection.style.display = "flex"
+    newGameButton.style.backgroundColor = ""
+    newGameButton.style.color = "#333"
+  } else {
+    wordInputSection.style.display = "none"
+    buttonsSection.style.display = "none"
+    newGameButton.style.backgroundColor = "green"
+    newGameButton.style.color = "white"
+  }
+}
+
 function revealAnswers() {
   clearInterval(timer)
   timer = null
@@ -141,14 +210,8 @@ function revealAnswers() {
     "button[onclick='checkWord()']"
   )
   checkWordButton.disabled = true
+  toggleWordInputAndButtons(false)
 }
-
-function updateTimerDisplay(timeRemaining) {
-  const timerDisplay = document.getElementById("timer-display")
-  timerDisplay.textContent = `Time remaining: ${timeRemaining} seconds`
-}
-
-const submittedWords = []
 
 function checkWord() {
   if (words.length === 0) {
@@ -168,24 +231,35 @@ function checkWord() {
     return
   }
 
-  let isValidWord = true
-  for (let i = 0; i < enteredWord.length; i++) {
-    const letterIndex = randomLetters.indexOf(enteredWord[i])
-    if (letterIndex === -1) {
-      isValidWord = false
-      break
-    } else {
-      randomLetters.splice(letterIndex, 1)
-    }
+  const isWordInDictionary = word => {
+    return words.includes(word)
   }
+
+  const getInvalidLetters = (word, letters) => {
+    const invalidLetters = []
+
+    for (const letter of word) {
+      const letterIndex = letters.indexOf(letter)
+
+      if (letterIndex === -1) {
+        invalidLetters.push(letter)
+      } else {
+        letters.splice(letterIndex, 1)
+      }
+    }
+
+    return invalidLetters
+  }
+
+  const invalidLetters = getInvalidLetters(enteredWord, [...randomLetters])
 
   const wordList = document.getElementById("word-list")
   const wordListItem = document.createElement("li")
   wordListItem.textContent = enteredWord
 
   if (
-    isValidWord &&
-    words.includes(enteredWord) &&
+    invalidLetters.length === 0 &&
+    isWordInDictionary(enteredWord) &&
     !submittedWords.includes(enteredWord)
   ) {
     wordListItem.style.color = "green"
@@ -193,30 +267,54 @@ function checkWord() {
 
     // Calculate bonus points and messages based on time
     const timeRemaining = parseInt(
-      document.getElementById("timer-display").textContent.split(" ")[2]
+      document.getElementById("timer-display").textContent.split(" ")[1]
     )
+
     let points = enteredWord.length
     let bonusMessage = ""
+    let correctGuessMessage = `✅ ${enteredWord.length} letters`
 
     if (timeRemaining >= 50) {
       points *= 3
-      bonusMessage = "👏🏼 x3 First 10sec bonus!👏🏼"
+      bonusMessage = "👏 x3 First 10sec bonus!"
     } else if (timeRemaining >= 40) {
       points *= 2
-      bonusMessage = "👏🏼x2 bonus!👏🏼"
+      bonusMessage = "👏 x2 bonus!"
     }
 
-    updateScore(points, bonusMessage)
+    updateScore(points, bonusMessage, correctGuessMessage)
   } else if (submittedWords.includes(enteredWord)) {
     // Do nothing if the word is already in the submittedWords array
     wordInput.value = ""
     return
   } else {
     wordListItem.style.color = "red"
+    let errorMessage = ""
+
+    if (!isWordInDictionary(enteredWord)) {
+      errorMessage += "❌ Not a word! "
+    }
+
+    if (invalidLetters.length > 0) {
+      errorMessage += `❌ ${invalidLetters
+        .map(letter => letter.toUpperCase())
+        .join(", ")} do not exist!`
+    }
+
+    displayMessage(errorMessage, "red")
   }
 
   wordList.appendChild(wordListItem)
   wordInput.value = ""
+}
+
+function displayErrorMessage(message) {
+  const messageDisplay = document.getElementById("message-display")
+  messageDisplay.style.color = "red"
+  messageDisplay.textContent = message
+  setTimeout(() => {
+    messageDisplay.textContent = ""
+  }, 2000)
 }
 
 function suggestWords() {
@@ -281,12 +379,13 @@ function suggestWords() {
     }
 
     suggestionList.appendChild(suggestion)
+    toggleWordInputAndButtons(false)
   }
 
   const helpMessage =
     suggestions.length > 0
-      ? "Here are some words that can be formed using the given letters:"
-      : "Sorry, no words can be formed from these letters."
+      ? "Longest words from the given letters 👇"
+      : "Wow! No words can be formed."
   const container = document.getElementById("suggestions-container")
   container.innerHTML = ""
   container.style.display = "block"
@@ -296,6 +395,23 @@ function suggestWords() {
   container.appendChild(suggestionList)
 }
 
+document.addEventListener("keydown", function (event) {
+  if (event.metaKey && event.key === "k") {
+    document.getElementById("start-again").click()
+  }
+})
+
+function handleEnterKey(event) {
+  if (event.key === "Enter") {
+    checkWord()
+  }
+}
+
 document
   .getElementById("word-input")
-  .addEventListener("keydown", handleEnterKey)
+  .addEventListener("keydown", function (event) {
+    handleEnterKey(event)
+    if (event.metaKey && event.key === "k") {
+      event.preventDefault() // prevent the default behavior of the shortcut key
+    }
+  })
