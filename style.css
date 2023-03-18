@@ -438,3 +438,24 @@ footer a:hover {
 #readme a:hover {
   border-bottom: none;
 }
+
+/* Styles for mobile and tablet devices */
+@media only screen and (max-width: 768px) {
+  /* Hide the entire main element on mobile and tablet devices */
+  .wrapper {
+    display: none;
+  }
+
+  /* Display a message indicating that the app is not available */
+  body:before {
+    content: "Sorry, this app is currently not available for mobile and tablet devices.";
+    display: block;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+}
