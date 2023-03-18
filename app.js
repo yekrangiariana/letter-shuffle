@@ -29,14 +29,29 @@ let score = 0
 const submittedWords = []
 let timeoutID = null
 
-const xhr = new XMLHttpRequest()
-xhr.open("GET", "words.txt", true)
-xhr.onreadystatechange = function () {
-  if (xhr.readyState === 4 && xhr.status === 200) {
-    words.push(...xhr.responseText.split("\n"))
-  }
-}
-xhr.send()
+const cacheBuster = new Date().getTime()
+fetch(`words.txt?_=${cacheBuster}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok")
+    }
+    return response.text()
+  })
+  .then(data => {
+    const filteredWords = data.split("\n").filter(word => {
+      // Remove words that have only one letter
+      if (word.length <= 1) return false
+
+      // Remove words with three repeated letters
+      const charCount = Array.from(new Set(word)).length
+      return !(word.length === 3 && charCount === 1)
+    })
+    words.push(...filteredWords)
+  })
+  .catch(error => {
+    console.error("There was a problem with the fetch operation:", error)
+    alert("An error occurred while loading the word list. Please try again.")
+  })
 
 document.getElementById("start-again").addEventListener("click", startGame)
 
