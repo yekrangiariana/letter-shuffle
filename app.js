@@ -23,6 +23,35 @@ const CONSONANTS = [
 ]
 const VOWELS = ["a", "e", "i", "o", "u"]
 
+const FINNISH_CONSONANTS = [
+  "b",
+  "c",
+  "d",
+  "f",
+  "g",
+  "h",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "p",
+  "r",
+  "s",
+  "t",
+  "v",
+  "x",
+  "s"
+]
+const FINNISH_VOWELS = ["a", "e", "i", "o", "u", "y", "ä", "ö"]
+
+let currentConsonants = CONSONANTS
+let currentVowels = VOWELS
+let currentWordsFile = "words.txt"
+
+document.getElementById("start-again").addEventListener("click", startGame)
+const wordInput = document.getElementById("word-input")
+
 const words = []
 let timer = null
 let score = 0
@@ -30,13 +59,14 @@ const submittedWords = []
 let timeoutID = null
 
 const cacheBuster = new Date().getTime()
-fetch(`words.txt?_=${cacheBuster}`)
+fetch(`${currentWordsFile}?_=${cacheBuster}`)
   .then(response => {
     if (!response.ok) {
       throw new Error("Network response was not ok")
     }
     return response.text()
   })
+
   .then(data => {
     const filteredWords = data.split("\n").filter(word => {
       // Remove words that have only one letter
@@ -48,12 +78,107 @@ fetch(`words.txt?_=${cacheBuster}`)
     })
     words.push(...filteredWords)
   })
+
   .catch(error => {
     console.error("There was a problem with the fetch operation:", error)
     alert("An error occurred while loading the word list. Please try again.")
   })
 
-document.getElementById("start-again").addEventListener("click", startGame)
+document.addEventListener("DOMContentLoaded", function () {
+  const settingsCog = document.getElementById("settings-cog")
+  const settingsModal = document.getElementById("settings-modal")
+  const modalClose = document.querySelector(".modal-close")
+  const languageSelection = document.getElementById("language-selection")
+
+  loadWords("en") // Load English words by default
+
+  settingsCog.addEventListener("click", () => {
+    settingsModal.style.display = "block"
+  })
+
+  modalClose.addEventListener("click", () => {
+    settingsModal.style.display = "none"
+  })
+
+  window.addEventListener("click", event => {
+    if (event.target === settingsModal) {
+      settingsModal.style.display = "none"
+    }
+  })
+
+  // Load saved language preference
+  const savedLanguage = localStorage.getItem("language")
+  if (savedLanguage) {
+    setLanguage(savedLanguage)
+    languageSelection.value = savedLanguage
+  } else {
+    loadWords("en") // Load English words by default
+  }
+
+  languageSelection.addEventListener("change", event => {
+    const selectedLanguage = event.target.value
+    setLanguage(selectedLanguage)
+    localStorage.setItem("language", selectedLanguage) // Save the language preference to the browser
+    displayRandomLetters()
+  })
+
+  // Load saved dark mode preference
+  const savedDarkMode = localStorage.getItem("darkMode")
+  const darkModeToggle = document.getElementById("dark-mode-toggle")
+
+  darkModeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode")
+    localStorage.setItem("darkMode", darkModeToggle.checked) // Save the dark mode preference to the browser
+  })
+
+  if (savedDarkMode !== null) {
+    const isDarkMode = JSON.parse(savedDarkMode) // Convert the saved string to a boolean value
+    darkModeToggle.checked = isDarkMode
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode")
+    } else {
+      document.body.classList.remove("dark-mode")
+    }
+  }
+})
+
+function loadWords(language) {
+  if (language === "en") {
+    currentConsonants = CONSONANTS
+    currentVowels = VOWELS
+    currentWordsFile = "words.txt"
+  } else if (language === "fi") {
+    currentConsonants = FINNISH_CONSONANTS
+    currentVowels = FINNISH_VOWELS
+    currentWordsFile = "wordsfin.txt"
+  }
+
+  // Fetch the words file
+  const cacheBuster = new Date().getTime()
+  fetch(`${currentWordsFile}?_=${cacheBuster}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok")
+      }
+      return response.text()
+    })
+    .then(data => {
+      const filteredWords = data.split("\n").filter(word => {
+        // Remove words that have only one letter
+        if (word.length <= 1) return false
+
+        // Remove words with three repeated letters
+        const charCount = Array.from(new Set(word)).length
+        return !(word.length === 3 && charCount === 1)
+      })
+      words.length = 0 // Clear the existing words array
+      words.push(...filteredWords)
+    })
+    .catch(error => {
+      console.error("There was a problem with the fetch operation:", error)
+      alert("An error occurred while loading the word list. Please try again.")
+    })
+}
 
 function startGame() {
   // Display the game container
@@ -64,23 +189,20 @@ function startGame() {
   const homeMenu = document.getElementById("home-menu")
   homeMenu.style.display = "none"
 
-  // Generate the initial set of random letters
   displayRandomLetters()
-
-  // Focus the input element
-  const wordInput = document.getElementById("word-input")
   wordInput.focus()
 }
 
 function generateRandomLetters() {
   let letters = []
   for (let i = 0; i < 4; i++) {
-    const randomVowel = VOWELS[Math.floor(Math.random() * VOWELS.length)]
+    const randomVowel =
+      currentVowels[Math.floor(Math.random() * currentVowels.length)]
     letters.push(randomVowel)
   }
   for (let i = 0; i < 6; i++) {
     const randomConsonant =
-      CONSONANTS[Math.floor(Math.random() * CONSONANTS.length)]
+      currentConsonants[Math.floor(Math.random() * currentConsonants.length)]
     letters.push(randomConsonant)
   }
   return letters
@@ -95,14 +217,75 @@ function shuffle(array) {
   return newArray
 }
 
-function updateScore(points, bonusMessage, correctGuessMessage) {
-  score += points
-  const scoreDisplay = document.getElementById("score-display")
-  scoreDisplay.textContent = `${score}`
+function displayRandomLetters() {
+  const container = document.getElementById("random-letters-container")
+  const randomLetters = generateRandomLetters()
+  const shuffledLetters = shuffle(randomLetters)
+  container.innerHTML = ""
+  shuffledLetters.forEach(letter => {
+    const miniBox = document.createElement("div")
+    miniBox.classList.add("mini-box")
+    miniBox.textContent = letter.toUpperCase()
+    container.appendChild(miniBox)
+
+    // Re-enable the input and "Check Word" button
+    wordInput.disabled = false
+    const checkWordButton = document.querySelector(
+      "button[onclick='checkWord()']"
+    )
+    checkWordButton.disabled = false
+
+    toggleWordInputAndButtons(true)
+  })
+
+  // Clear the suggestions container
+  const suggestionsContainer = document.getElementById("suggestions-container")
+  suggestionsContainer.innerHTML = ""
+  suggestionsContainer.style.display = "none"
+
+  // Clear the previous list items (words)
+  const wordList = document.getElementById("word-list")
+  wordList.innerHTML = ""
+
+  let timeRemaining = 60
+  updateTimerDisplay(timeRemaining, revealAnswers)
+}
+
+function updateTimerDisplay(timeRemaining, onTimeOut) {
+  const timerDisplay = document.getElementById("timer-display")
+  timerDisplay.textContent = `⏰ ${timeRemaining}`
+
+  if (timer) {
+    clearTimeout(timer)
+  }
+
+  timer = setInterval(() => {
+    timeRemaining -= 1
+    if (timeRemaining >= 0) {
+      timerDisplay.textContent = `⏰ ${timeRemaining}`
+    } else {
+      clearInterval(timer)
+      timer = null
+      if (onTimeOut) {
+        onTimeOut()
+      }
+    }
+  }, 1000)
+}
+
+function displayAndUpdateScore(
+  points,
+  correctGuessMessage,
+  bonusMessage = null
+) {
+  if (points !== undefined) {
+    score += points
+    const scoreDisplay = document.getElementById("score-display")
+    scoreDisplay.textContent = `${score}`
+  }
 
   const messageDisplay = document.getElementById("message-display")
-  messageDisplay.innerHTML = "" // Clear the previous content
-  messageDisplay.style.textAlign = "center" // Center the messages
+  messageDisplay.innerHTML = ""
 
   if (bonusMessage) {
     const bonusMessageElement = document.createElement("div")
@@ -124,77 +307,6 @@ function updateScore(points, bonusMessage, correctGuessMessage) {
   }, 3000)
 }
 
-function displayMessage(message, color) {
-  const messageDisplay = document.getElementById("message-display")
-  messageDisplay.innerHTML = "" // Clear the previous content
-  messageDisplay.style.color = color
-
-  const messageElement = document.createElement("div")
-  messageElement.textContent = message
-  messageElement.classList.add("message-button")
-  messageDisplay.appendChild(messageElement)
-
-  if (timeoutID !== null) {
-    clearTimeout(timeoutID)
-  }
-  timeoutID = setTimeout(() => {
-    messageDisplay.textContent = ""
-  }, 3000)
-}
-
-function displayRandomLetters() {
-  const container = document.getElementById("random-letters-container")
-  const randomLetters = generateRandomLetters()
-  const shuffledLetters = shuffle(randomLetters)
-  container.innerHTML = ""
-  shuffledLetters.forEach(letter => {
-    const miniBox = document.createElement("div")
-    miniBox.classList.add("mini-box")
-    miniBox.textContent = letter.toUpperCase()
-    container.appendChild(miniBox)
-
-    // Re-enable the input and "Check Word" button
-    const wordInput = document.getElementById("word-input")
-    wordInput.disabled = false
-    const checkWordButton = document.querySelector(
-      "button[onclick='checkWord()']"
-    )
-    checkWordButton.disabled = false
-    toggleWordInputAndButtons(true)
-  })
-
-  // Clear the suggestions container
-  const suggestionsContainer = document.getElementById("suggestions-container")
-  suggestionsContainer.innerHTML = ""
-  suggestionsContainer.style.display = "none"
-
-  // Clear the previous list items (words)
-  const wordList = document.getElementById("word-list")
-  wordList.innerHTML = ""
-
-  // Start the timer
-  if (timer) {
-    clearTimeout(timer)
-  }
-  let timeRemaining = 60
-  updateTimerDisplay(timeRemaining)
-  timer = setInterval(() => {
-    timeRemaining -= 1
-    if (timeRemaining >= 0) {
-      updateTimerDisplay(timeRemaining)
-    } else {
-      clearInterval(timer)
-      timer = null
-      revealAnswers()
-    }
-  }, 1000)
-}
-
-function updateTimerDisplay(timeRemaining) {
-  const timerDisplay = document.getElementById("timer-display")
-  timerDisplay.textContent = `⏰ ${timeRemaining}`
-}
-
 function toggleWordInputAndButtons(show) {
   const wordInputSection = document.querySelector(".word-input")
   const buttonsSection = document.querySelector(".buttons")
@@ -208,7 +320,7 @@ function toggleWordInputAndButtons(show) {
   } else {
     wordInputSection.style.display = "none"
     buttonsSection.style.display = "none"
-    newGameButton.style.backgroundColor = "green"
+    newGameButton.style.backgroundColor = "var(--color-accent)"
     newGameButton.style.color = "white"
   }
 }
@@ -219,7 +331,6 @@ function revealAnswers() {
   const timerDisplay = document.getElementById("timer-display")
   timerDisplay.textContent = ""
   suggestWords()
-  const wordInput = document.getElementById("word-input")
   wordInput.disabled = true
   const checkWordButton = document.querySelector(
     "button[onclick='checkWord()']"
@@ -229,11 +340,6 @@ function revealAnswers() {
 }
 
 function checkWord() {
-  if (words.length === 0) {
-    alert("Please wait for the word list to load before checking a word.")
-    return
-  }
-  const wordInput = document.getElementById("word-input")
   const enteredWord = wordInput.value.toLowerCase()
   const randomLetters = document
     .getElementById("random-letters-container")
@@ -277,7 +383,7 @@ function checkWord() {
     isWordInDictionary(enteredWord) &&
     !submittedWords.includes(enteredWord)
   ) {
-    wordListItem.style.color = "green"
+    wordListItem.style.color = "var(--color-accent)"
     submittedWords.push(enteredWord)
 
     // Calculate bonus points and messages based on time
@@ -297,7 +403,7 @@ function checkWord() {
       bonusMessage = "👏 x2 bonus!"
     }
 
-    updateScore(points, bonusMessage, correctGuessMessage)
+    displayAndUpdateScore(points, correctGuessMessage, bonusMessage)
   } else if (submittedWords.includes(enteredWord)) {
     // Do nothing if the word is already in the submittedWords array
     wordInput.value = ""
@@ -311,12 +417,12 @@ function checkWord() {
     }
 
     if (invalidLetters.length > 0) {
-      errorMessage += `❌ ${invalidLetters
+      errorMessage += `❌ You don't have: ${invalidLetters
         .map(letter => letter.toUpperCase())
-        .join(", ")} do not exist!`
+        .join(", ")}`
     }
 
-    displayMessage(errorMessage, "red")
+    displayAndUpdateScore(undefined, errorMessage)
   }
 
   wordList.appendChild(wordListItem)
@@ -408,6 +514,19 @@ function suggestWords() {
   container.appendChild(document.createTextNode(helpMessage))
   container.appendChild(document.createElement("br"))
   container.appendChild(suggestionList)
+}
+
+function setLanguage(language) {
+  if (language === "Finnish") {
+    currentConsonants = FINNISH_CONSONANTS
+    currentVowels = FINNISH_VOWELS
+    currentWordsFile = "wordsfin.txt"
+  } else {
+    currentConsonants = CONSONANTS
+    currentVowels = VOWELS
+    currentWordsFile = "words.txt"
+  }
+  loadWords()
 }
 
 document.addEventListener("keydown", function (event) {
