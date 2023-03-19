@@ -1,7 +1,38 @@
+:root {
+  /* Colors */
+  --background-color: #f5f5f5;
+  --background-color-dark: #252525;
+  --background-color-light: #f2f2f2;
+  --color: #333;
+  --color-dark: #9e9e9e;
+  --color-title-dark: #e3e3e3;
+  --color-boxes-dark: #414141;
+  --color-light: #4a4a4a;
+  --color-accent: green;
+  --border-color: #333;
+
+  /* Box Shadows */
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  /* Border Radii */
+  --border-radius-boxes: 10px;
+
+  /* Paddings */
+  --padding-small: 5px;
+  --padding-medium: 10px;
+  --padding-large: 20px;
+
+  /* Margins */
+  --margin-small: 5px;
+  --margin-medium: 10px;
+  --margin-large: 20px;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--background-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: var(--color);
   font-size: 1.5rem;
   height: 100%;
   margin: 0 auto;
@@ -10,6 +41,61 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.dark-mode {
+  background-color: var(--background-color-dark);
+  color: var(--color-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode #game-container {
+  background-color: var(--color-boxes-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: none;
+}
+
+body.dark-mode .modal-content {
+  background-color: var(--color-boxes-dark);
+}
+
+body.dark-mode #random-letters-container {
+  color: #1f1f1f;
+}
+
+body.dark-mode .suggestion-text {
+  color: #f5f5f5;
+}
+
+body.dark-mode #word-input {
+  color: #f5f5f5;
+}
+
+body.dark-mode .suggestion-letter:not(.highlighted) {
+  color: #1f1f1f;
+}
+
+body.dark-mode #game-description {
+  background-color: #414141;
+  box-shadow: none;
+}
+
+body.dark-mode h2 {
+  color: #f5f5f5;
+}
+
+body.dark-mode footer a {
+  color: #828282;
+}
+
+body.dark-mode #home-menu,
+#game-containerper {
+  background-color: #414141;
+}
+
+body.dark-mode .language-selection-wrapper,
+.dark-mode-toggle-wrapper {
+  color: #9d9d9d;
 }
 
 .wrapper {
@@ -26,7 +112,7 @@ body {
   width: 100%;
   border: 2px solid #333;
   border-radius: 10px;
-  background-color: #f2f2f2;
+  background-color: var(--background-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
@@ -39,6 +125,7 @@ body {
   padding: 10px;
   margin: 5px;
   border-radius: 5px;
+  text-align: center;
 }
 
 h1 {
@@ -55,7 +142,7 @@ h1 {
   padding: 20px;
   border: 2px solid #333;
   border-radius: 10px;
-  background-color: #f2f2f2;
+  background-color: var(--background-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
 }
@@ -78,7 +165,7 @@ h1 {
   font-size: 26px;
   font-weight: bold;
   line-height: 40px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 4px;
   opacity: 1;
   animation: fade-in 0.5s ease-out forwards;
@@ -90,7 +177,7 @@ h1 {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  background-color: #f2f2f2;
+  background-color: var(--background-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
@@ -116,11 +203,11 @@ h1 {
   border-bottom: 2px solid #333;
   outline: none;
   width: 60%;
-  background-color: #f2f2f2;
+  background-color: transparent;
 }
 
 #check-word-btn {
-  background-color: #fff;
+  background-color: var(--background-color);
   color: #333;
   cursor: pointer;
   margin-left: 1rem;
@@ -165,7 +252,7 @@ button:hover {
 }
 
 #start-again:hover {
-  background-color: green;
+  background-color: var(--color-accent);
   color: #fff !important;
   border: 2px solid #333;
   border-radius: 5px;
@@ -212,13 +299,13 @@ button:hover {
   font-size: 18px;
   font-weight: bold;
   line-height: 20px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 4px;
 }
 
 .suggestion-letter.highlighted {
   color: #fff;
-  background-color: green;
+  background-color: var(--color-accent);
 }
 
 hr {
@@ -243,7 +330,7 @@ li {
   font-size: 18px;
   font-weight: bold;
   line-height: 20px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 4px;
   padding: 5px 10px;
 }
@@ -265,7 +352,7 @@ li {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  background-color: #f5f5f5;
+  background-color: var(--background-color);
 }
 
 #game-buttons {
@@ -315,7 +402,7 @@ fade-in {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: green;
+  color: var(--color-accent);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
@@ -328,6 +415,7 @@ fade-in {
   opacity: 0;
 }
 
+/* Feedback messages */
 .message-button {
   display: inline-block;
   margin: 2px;
@@ -343,18 +431,32 @@ fade-in {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 0px;
   background-color: #1f1f1f;
-  color: white;
   font-size: 24px;
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: 15px;
   margin-bottom: 10px;
+  color: #f5f5f5;
+}
+
+.game-header .modal-content {
+  color: #1f1f1f;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+}
+
+.right-section {
+  text-align: right;
 }
 
 .game-title {
-  flex-grow: 1;
   text-align: center;
+  flex: 1;
+  padding-right: 10%;
 }
 
 .game-score {
@@ -372,7 +474,7 @@ fade-in {
 }
 
 footer {
-  background-color: #f5f5f5;
+  background-color: transparent;
   padding: 20px;
   text-align: center;
   font-size: 14px;
@@ -396,9 +498,10 @@ footer a:hover {
   font-size: 18px;
   line-height: 1.5;
   color: #333;
-  background-color: #f8f8f8;
+  background-color: var(--background-color);
   border: 2px solid #333;
   border-radius: 10px;
+  height: auto;
 }
 
 #readme h1 {
@@ -437,4 +540,143 @@ footer a:hover {
 
 #readme a:hover {
   border-bottom: none;
+}
+
+/* Settings */
+
+.settings-cog {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  outline: none;
+}
+
+.settings-cog:hover {
+  background: none;
+}
+
+.settings-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* add other styles as needed */
+}
+
+.modal-content {
+  position: relative;
+  background-color: #f5f5f5;
+  margin: 10% auto;
+  padding: 20px;
+  max-width: 20%;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--border-color);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  color: #aaaaaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px; /* Increase font size */
+  margin-bottom: 20px;
+}
+
+.dark-mode-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.dark-mode-toggle::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.dark-mode-toggle:checked {
+  background-color: var(--color-accent);
+}
+
+.dark-mode-toggle:checked::before {
+  transform: translateX(30px);
+}
+
+.language-selection-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+#language-selection {
+  padding: 6px 10px;
+  font-size: 16px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  appearance: none;
+  cursor: pointer;
+}
+
+#start-again:after {
+  content: "⌘K";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: -15px;
+  right: -15px;
+  background-color: #1f1f1f;
+  color: #fff;
+  font-size: 12px;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  text-align: center;
 }

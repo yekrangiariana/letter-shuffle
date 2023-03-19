@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Letter Shuffle</title>
+    <title>🎲 Letter Shuffle</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    
+</div>
     <!-- Home menu -->
     <div class="wrapper">
       <div id="home-menu">
@@ -36,9 +36,31 @@
         </div>
         <button onclick="startGame();">Start Game</button>
       </div>
-      <!-- Game container (initially hidden) -->
+      <!-- Game container (initially hidden) --> 
       <div id="game-container" style="display: none">
         <div class="game-header">
+          <div>
+            <div>
+              <button id="settings-cog" class="settings-cog">⚙️</button>
+              <div id="settings-modal" class="settings-modal">
+                <div class="modal-content">
+                  <span class="modal-close">&times;</span>
+                  <h2>Settings</h2>
+                  <div class="dark-mode-toggle-wrapper">
+                    Dark Mode:
+                    <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle">
+                  </div>
+                  <div class="language-selection-wrapper">
+                    Language:
+                    <select id="language-selection">
+                      <option value="English">English</option>
+                      <option value="Finnish">Finnish</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="timer" id="timer-display"></div>
           <div class="game-title">Letter Shuffle</div>
           <div class="game-score">Score: <span id="score-display">0</span></div>
@@ -53,13 +75,13 @@
             </div>
           </div>
           <div class="game-suggestions">
-            <div class="suggestions-title">Your gusses:</div>
+            <div class="suggestions-title">Your guesses:</div>
             <ul class="suggestions-list" id="word-list"></ul>
             <div class="suggestions-help" id="suggestions-container"></div>
             <div class="buttons">
               <button class="button" onclick="suggestWords()">Show Answers</button>
             </div>
-            <button class="button" id="start-again" onclick="displayRandomLetters();">New Game ⌘K</button>
+            <button class="button" id="start-again" onclick="displayRandomLetters();">New Game</button>
           </div>
         </div>
       </div>
@@ -68,6 +90,6 @@
       <p>Made with ❤️ by Ariana Yekrangi</p>
       <p><a href="README.html">Learn More</a></p>
     </footer>
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
   </body>
 </html>
