@@ -116,10 +116,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   languageSelection.addEventListener("change", event => {
-    const selectedLanguage = event.target.value
+    const selectedLanguage =
+      event.target.options[event.target.selectedIndex].text
     setLanguage(selectedLanguage)
     localStorage.setItem("language", selectedLanguage) // Save the language preference to the browser
     displayRandomLetters()
+    updateLanguageEmoji(selectedLanguage) // Add this line
+    wordInput.value = ""
   })
 
   // Load saved dark mode preference
@@ -140,7 +143,23 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.remove("dark-mode")
     }
   }
+  if (savedLanguage) {
+    setLanguage(savedLanguage)
+    languageSelection.value = savedLanguage
+    updateLanguageEmoji(savedLanguage) // Add this line
+  } else {
+    loadWords("en") // Load English words by default
+  }
 })
+
+function updateLanguageEmoji(selectedLanguage) {
+  const languageEmoji = document.querySelector(".language-emoji")
+  if (selectedLanguage === "English") {
+    languageEmoji.innerText = "🇬🇧"
+  } else {
+    languageEmoji.innerText = "🇫🇮"
+  }
+}
 
 function loadWords(language) {
   if (language === "en") {
@@ -409,7 +428,7 @@ function checkWord() {
     wordInput.value = ""
     return
   } else {
-    wordListItem.style.color = "red"
+    wordListItem.style.color = "var(--color-accent-2)"
     let errorMessage = ""
 
     if (!isWordInDictionary(enteredWord)) {
@@ -431,7 +450,7 @@ function checkWord() {
 
 function displayErrorMessage(message) {
   const messageDisplay = document.getElementById("message-display")
-  messageDisplay.style.color = "red"
+  messageDisplay.style.color = "var(--color-accent-2)"
   messageDisplay.textContent = message
   setTimeout(() => {
     messageDisplay.textContent = ""
@@ -517,16 +536,11 @@ function suggestWords() {
 }
 
 function setLanguage(language) {
-  if (language === "Finnish") {
-    currentConsonants = FINNISH_CONSONANTS
-    currentVowels = FINNISH_VOWELS
-    currentWordsFile = "wordsfin.txt"
-  } else {
-    currentConsonants = CONSONANTS
-    currentVowels = VOWELS
-    currentWordsFile = "words.txt"
+  if (language === "English") {
+    loadWords("en")
+  } else if (language === "Finnish") {
+    loadWords("fi")
   }
-  loadWords()
 }
 
 document.addEventListener("keydown", function (event) {

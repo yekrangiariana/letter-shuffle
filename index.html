@@ -6,35 +6,33 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-</div>
     <!-- Home menu -->
     <div class="wrapper">
       <div id="home-menu">
         <div id="game-description">
-          <h1>🎲Letter Shuffle</h1>
+          <h1>Letter Shuffle</h1>
           <p>
-            🧙‍♀️ Unleash your inner word wizard! Race against the clock to form
-            valid words using the random letters provided.
+            ⌛ Race against the clock to form as many words as you can using the random letters provided.
           </p>
-          <p><strong>Rules:</strong></p>
+          <p id="rules-p"><strong>Rules:</strong></p>
           <ol>
             <li>
               🔤 We will give you 10 random letters (4 vowels and 6 consonants).
             </li>
             <li>
-              ⏰ You have 1 minute to create as many valid words as possible.
+              ⏰ You have 1 minute to create as many words as possible.
             </li>
             <li>
-              📖 Valid words are in our dictionary and use the given letters.
+              📖 Words are in our dictionary and use the provided letters.
             </li>
-            <li>🔎 Press Enter or click "Check Word" to check validity.</li>
+            <li>🔎 Press Enter to check validity.</li>
             <li>
               🏅 The longer the word and the quicker you respond, the higher the
               score.
             </li>
           </ol>
         </div>
-        <button onclick="startGame();">Start Game</button>
+        <button onclick="startGame();">Normal Mode</button>
       </div>
       <!-- Game container (initially hidden) --> 
       <div id="game-container" style="display: none">
@@ -64,6 +62,7 @@
           <div class="timer" id="timer-display"></div>
           <div class="game-title">Letter Shuffle</div>
           <div class="game-score">Score: <span id="score-display">0</span></div>
+          <div class="language-emoji"></div>
         </div>
         <div class="game-body">
           <div class="game-board">
@@ -88,7 +87,7 @@
     </div>
     <footer>
       <p>Made with ❤️ by Ariana Yekrangi</p>
-      <p><a href="README.html">Learn More</a></p>
+      <p><a href="https://github.com/yekrangiariana/letter-shuffle">Learn More</a></p>
     </footer>
     <script src="app.js" defer></script>
   </body>
